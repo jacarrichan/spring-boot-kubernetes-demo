@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-demo
+  labels:
+    app: spring-boot-demo
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080
+    nodePort: 30000   # 此处定义POD的端口8080映射为Node的30000
+  selector:
+    app: spring-boot-demo
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-boot-demo
+  template:
+    metadata:
+      labels:
+        app: spring-boot-demo
+    spec:
+      containers:
+      - name: spring-boot-demo
+        image: jacarrichan/spring-boot-demo:0.0.1-SNAPSHOT
+        ports:
+        - name: http
+          containerPort: 8080   # 此处定义POD暴露的端口
+
